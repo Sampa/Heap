@@ -26,6 +26,16 @@ public class DHeap<AnyType extends Comparable<? super AnyType>>
     {
         this( DEFAULT_CAPACITY );
     }
+    /**
+     *
+     * @param capacity
+     * @param heapLevel if we want a 2-heap,3-heap etc
+     */
+    public DHeap(int capacity, int heapLevel)
+    {
+        currentSize = 0;
+        array = (AnyType[]) new Comparable[ capacity + 1 ];
+    }
 
     /**
      * Construct the binary heap.
