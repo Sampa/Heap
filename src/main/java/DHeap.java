@@ -17,31 +17,21 @@
  * Note that all "matching" is based on the compareTo method.
  * @author Mark Allen Weiss
  */
-public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
+public class DHeap<AnyType extends Comparable<? super AnyType>>
 {
     /**
      * Construct the binary heap.
      */
-    public BinaryHeap( )
+    public DHeap()
     {
         this( DEFAULT_CAPACITY );
-    }
-    /**
-     *
-     * @param capacity
-     * @param heapLevel if we want a 2-heap,3-heap etc
-     */
-    public BinaryHeap( int capacity, int heapLevel )
-    {
-        currentSize = 0;
-        array = (AnyType[]) new Comparable[ capacity + 1 ];
     }
 
     /**
      * Construct the binary heap.
      * @param capacity the capacity of the binary heap.
      */
-    public BinaryHeap( int capacity )
+    public DHeap(int capacity)
     {
         currentSize = 0;
         array = (AnyType[]) new Comparable[ capacity + 1 ];
@@ -50,7 +40,7 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
     /**
      * Construct the binary heap given an array of items.
      */
-    public BinaryHeap( AnyType [ ] items )
+    public DHeap(AnyType[] items)
     {
         currentSize = items.length;
         array = (AnyType[]) new Comparable[ ( currentSize + 2 ) * 11 / 10 ];
@@ -173,7 +163,7 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
     public static void main( String [ ] args )
     {
         int numItems = 10000;
-        BinaryHeap<Integer> h = new BinaryHeap<>( );
+        DHeap<Integer> h = new DHeap<>( );
         int i = 37;
 
         for( i = 37; i != 0; i = ( i + 37 ) % numItems )
