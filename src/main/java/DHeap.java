@@ -12,6 +12,8 @@
 // ******************ERRORS********************************
     // Throws UnderflowException as appropriate
 
+import java.util.Arrays;
+
 /**
  * Implements a binary heap.
  * Note that all "matching" is based on the compareTo method.
@@ -19,46 +21,44 @@
  */
 public class DHeap<AnyType extends Comparable<? super AnyType>>
 {
+    private int children;
+    private static final int DEFAULT_CAPACITY = 100;
+    private int currentSize;      // Number of elements in heap
+    private AnyType [ ] array; // The heap array
+
+    @Override
+    public String toString() {
+
+            String str = "";
+            for(int i = 1;i<currentSize;i++){
+                str+=array[i]+"-";
+            }
+        return "DHeap{" +
+                "children=" + children +
+                ", currentSize=" + currentSize +
+                ", array=" + Arrays.toString(array) +
+                '}';
+    }
+
     /**
-     * Construct the binary heap.
+     * Construct a binary heap.
      */
     public DHeap()
     {
-        this( DEFAULT_CAPACITY );
+        this(2);
     }
-    /**
-     *
-     * @param capacity
-     * @param heapLevel if we want a 2-heap,3-heap etc
+       /**
+     * Construct the d-heap.
+     * @param children the number of children for each node in the d-heap.
+     *                 or throws IllegalArgumentException if num of children < 2
      */
-    public DHeap(int capacity, int heapLevel)
+    public DHeap(int children) throws IllegalArgumentException
     {
+        if(children<2)
+            throw new IllegalArgumentException("parameter children to dheap must be > 1");
+        this.children = children;
         currentSize = 0;
-        array = (AnyType[]) new Comparable[ capacity + 1 ];
-    }
-
-    /**
-     * Construct the binary heap.
-     * @param capacity the capacity of the binary heap.
-     */
-    public DHeap(int capacity)
-    {
-        currentSize = 0;
-        array = (AnyType[]) new Comparable[ capacity + 1 ];
-    }
-
-    /**
-     * Construct the binary heap given an array of items.
-     */
-    public DHeap(AnyType[] items)
-    {
-        currentSize = items.length;
-        array = (AnyType[]) new Comparable[ ( currentSize + 2 ) * 11 / 10 ];
-
-        int i = 1;
-        for( AnyType item : items )
-            array[ i++ ] = item;
-        buildHeap( );
+        array = (AnyType[]) new Comparable[ DEFAULT_CAPACITY + 1 ];
     }
 
     /**
@@ -69,15 +69,14 @@ public class DHeap<AnyType extends Comparable<? super AnyType>>
     public void insert( AnyType x )
     {
         if( currentSize == array.length - 1 )
-            enlargeArray( array.length * 2 + 1 );
+               enlargeArray( array.length * children + 1 );
 
         // Percolate up
         int hole = ++currentSize;
-        for( array[ 0 ] = x; x.compareTo( array[ hole / 2 ] ) < 0; hole /= 2 )
-            array[ hole ] = array[ hole / 2 ];
+        for( array[ 0 ] = x; x.compareTo( array[ hole / children ] ) < 0; hole /= children )
+            array[ hole ] = array[ hole / children ];
         array[ hole ] = x;
     }
-
 
     private void enlargeArray( int newSize )
     {
@@ -95,6 +94,7 @@ public class DHeap<AnyType extends Comparable<? super AnyType>>
     {
         if( isEmpty( ) )
             throw new UnderflowException();
+
         return array[ 1 ];
     }
 
@@ -108,9 +108,8 @@ public class DHeap<AnyType extends Comparable<? super AnyType>>
             throw new UnderflowException( );
 
         AnyType minItem = findMin( );
-        array[ 1 ] = array[ currentSize-- ];
+        array[ 1 ] = array[ currentSize-1 ];
         percolateDown( 1 );
-
         return minItem;
     }
 
@@ -120,10 +119,9 @@ public class DHeap<AnyType extends Comparable<? super AnyType>>
      */
     private void buildHeap( )
     {
-        for( int i = currentSize / 2; i > 0; i-- )
+        for( int i = currentSize / children; i > 0; i-- )
             percolateDown( i );
     }
-
     /**
      * Test if the priority queue is logically empty.
      * @return true if empty, false otherwise.
@@ -132,7 +130,6 @@ public class DHeap<AnyType extends Comparable<? super AnyType>>
     {
         return currentSize == 0;
     }
-
     /**
      * Make the priority queue logically empty.
      */
@@ -140,12 +137,6 @@ public class DHeap<AnyType extends Comparable<? super AnyType>>
     {
         currentSize = 0;
     }
-
-    private static final int DEFAULT_CAPACITY = 10;
-
-    private int currentSize;      // Number of elements in heap
-    private AnyType [ ] array; // The heap array
-
     /**
      * Internal method to percolate down in the heap.
      * @param hole the index at which the percolate begins.
@@ -154,33 +145,52 @@ public class DHeap<AnyType extends Comparable<? super AnyType>>
     {
         int child;
         AnyType tmp = array[ hole ];
-
-        for( ; hole * 2 <= currentSize; hole = child )
+        for( ; hole * children  <= currentSize; hole = child )
         {
-            child = hole * 2;
-            if( child != currentSize &&
-                    array[ child + 1 ].compareTo( array[ child ] ) < 0 )
+            child = hole * children;
+            for(int i=1;i<=children;i++){
+                AnyType temp = array[child+i];
+//                System.out.println(temp.toString());
+            }
+            System.out.println(children);
+            if( child != currentSize && array[ child+1].compareTo( array[ child ] ) < 0 )
                 child++;
             if( array[ child ].compareTo( tmp ) < 0 )
                 array[ hole ] = array[ child ];
             else
-                break;
+                child++;
+            if( array[ child ].compareTo( tmp ) < 0 )
+                array[ hole ] = array[ child ];
+            else
+                child++;
+            if( array[ child ].compareTo( tmp ) < 0 )
+                array[ hole ] = array[ child ];
+
         }
+        System.out.print(tmp);
         array[ hole ] = tmp;
     }
-
+    public int parentIndex(int child) throws IllegalArgumentException{
+        int parentIndex = child/children;
+        if(parentIndex < 1)
+            throw new IllegalArgumentException();
+        System.out.print(child+"/"+children+"/"+child/children);
+        return child/children;
+    }
     // Test program
     public static void main( String [ ] args )
     {
-        int numItems = 10000;
+        int numItems = 5;
         DHeap<Integer> h = new DHeap<>( );
         int i = 37;
 
         for( i = 37; i != 0; i = ( i + 37 ) % numItems )
             h.insert( i );
-        for( i = 1; i < numItems; i++ )
-            if( h.deleteMin( ) != i )
-                System.out.println( "Oops! " + i );
+        for( i = 1; i < numItems; i++ ){
+            int deleted = h.deleteMin();
+            if( deleted != i )
+                System.out.println(deleted+ "Oops! " + i );
+        }
     }
 }
 
