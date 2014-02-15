@@ -11,29 +11,6 @@ public class DHeapTester {
     private DHeap<Integer> heap = new DHeap<Integer>(4);
 
     /**
-     * Detta test kontrollerar att er kod implementerar en fungerande
-     * prioritetsk�. Detta test ska naturligtvis fungera.
-     */
-    @Test
-    public void testFunctionality() {
-        Random rnd = new Random();
-        PriorityQueue<Integer> oracle = new PriorityQueue<Integer>();
-
-        assertEquals(oracle.isEmpty(), heap.isEmpty());
-
-        for (int n = 0; n < 5; n++) {
-            int tal = rnd.nextInt(1000);
-            heap.insert(tal);
-            oracle.add(tal);
-            while (!heap.isEmpty() && rnd.nextBoolean()) {
-                assertEquals(oracle.poll(), heap.deleteMin());
-            }
-
-            assertEquals(oracle.isEmpty(), heap.isEmpty());
-        }
-    }
-
-    /**
      * Er heap ska ha tv� konstruktorer: en som inte tar n�gra parametrar och
      * som skapar en vanlig bin�r heap, och en som tar ett argument: d.
      * Observera att detta betyder att ni m�ste f�r�ndra de konstruktorer som
@@ -82,6 +59,29 @@ public class DHeapTester {
         assertEquals(3, heap.parentIndex(9));
         assertEquals(4, heap.parentIndex(13));
         assertEquals(1, heap.parentIndex(3));
+    }
+
+    /**
+     * Detta test kontrollerar att er kod implementerar en fungerande
+     * prioritetsk�. Detta test ska naturligtvis fungera.
+     */
+    @Test
+    public void testFunctionality() {
+        Random rnd = new Random();
+        PriorityQueue<Integer> oracle = new PriorityQueue<Integer>();
+
+        assertEquals(oracle.isEmpty(), heap.isEmpty());
+
+        for (int n = 0; n < 5; n++) {
+            int tal = rnd.nextInt(1000);
+            heap.insert(tal);
+            oracle.add(tal);
+            while (!heap.isEmpty() && rnd.nextBoolean()) {
+                assertEquals(oracle.poll(), heap.deleteMin());
+            }
+
+            assertEquals(oracle.isEmpty(), heap.isEmpty());
+        }
     }
 
     /**
@@ -170,12 +170,11 @@ public class DHeapTester {
         testValues(4, 5, 10, 12, 100, 51, 52, 23, 70, 17);
         heap.insert(1);
         testValues(1, 5, 4, 12, 100, 51, 52, 23, 70, 17, 10);
-
         assertEquals(1, (int) heap.deleteMin());
         testValues(4, 5, 10, 12, 100, 51, 52, 23, 70, 17);
         assertEquals(4, (int) heap.deleteMin());
         testValues(5, 17, 10, 12, 100, 51, 52, 23, 70);
         assertEquals(5, (int) heap.deleteMin());
-     //   testValues(10, 17, 70, 12, 100, 51, 52, 23);
+        testValues(10, 17, 70, 12, 100, 51, 52, 23);
     }
 }
